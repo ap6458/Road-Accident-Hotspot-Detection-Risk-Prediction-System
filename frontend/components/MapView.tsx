@@ -31,6 +31,7 @@ export default function MapView({
   showPoints?: boolean;
   showHotspots?: boolean;
 }) {
+
   const getColor = (severity: number) => {
     if (severity === 1) return "red";
     if (severity === 2) return "yellow";
@@ -42,10 +43,11 @@ export default function MapView({
     if (severity === 2) return 0.6;
     return 0.4;
   };
-   const getRadius = (severity: number) => {
-    if (severity === 1) return 5; // highest (fatal)
-    if (severity === 2) return 3; // moderate
-    return 1; // lowest
+
+  const getRadius = (severity: number) => {
+    if (severity === 1) return 5;
+    if (severity === 2) return 3;
+    return 1;
   };
 
   const getHotspotColor = (risk: string) => {
@@ -56,11 +58,41 @@ export default function MapView({
 
   return (
     <div style={{ position: "relative" }}>
-      {/* STATS PANEL */}
+
+      {/* ===== SIDEBAR ===== */}
       <div
         style={{
           position: "absolute",
-          color : "black",
+          top: "140px",
+          left: "12px",
+          zIndex: 1200,
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        <button
+          style={{
+            background: "white",
+            color: "black",
+            border: "none",
+            padding: "10px 14px",
+            borderRadius: "8px",
+            fontWeight: 600,
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
+          }}
+          onClick={() => alert("Open accident report form")}
+        >
+          🚨 Report Accident
+        </button>
+      </div>
+
+      {/* ===== STATS PANEL ===== */}
+      <div
+        style={{
+          position: "absolute",
+          color: "black",
           top: "20px",
           right: "20px",
           background: "white",
@@ -74,15 +106,15 @@ export default function MapView({
         <div><b>AI Hotspots:</b> {hotspots.length}</div>
       </div>
 
+      {/* ===== MAP ===== */}
       <MapContainer
         center={[51.5, -0.1]}
         zoom={10}
         style={{ height: "90vh", width: "100%" }}
       >
-        {/* CLEANER TILE */}
         <TileLayer url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png" />
 
-        {/* ACCIDENT POINTS */}
+        {/* Accident Points */}
         {showPoints &&
           points.map((p, i) => (
             <CircleMarker
@@ -91,10 +123,14 @@ export default function MapView({
               radius={getRadius(p.accident_severity)}
               color={getColor(p.accident_severity)}
               fillOpacity={getOpacity(p.accident_severity)}
-            />
+            >
+              <Popup>
+                Severity: {p.accident_severity}
+              </Popup>
+            </CircleMarker>
           ))}
 
-        {/* AI HOTSPOTS */}
+        {/* AI Hotspots */}
         {showHotspots &&
           hotspots.map((h, i) => (
             <Circle
@@ -112,38 +148,41 @@ export default function MapView({
             </Circle>
           ))}
       </MapContainer>
-      {/* LEGEND */}
-<div
-  style={{
-    position: "absolute",
-    bottom: "50px",
-    right: "20px",
-    background: "white",
-    padding: "10px 14px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-    zIndex: 1000,
-    color: "black",
-    fontSize: "14px",
-    lineHeight: "24px",
-  }}
-> 
-  <span>Accident zone areas</span>
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <span style={{ width: 10, height: 10, borderRadius: "50%", background: "red", display: "inline-block" }} />
-    Severe
-  </div>
 
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <span style={{ width: 10, height: 10, borderRadius: "50%", background: "yellow", display: "inline-block", border: "1px solid #999" }} />
-    Moderate
-  </div>
+      {/* ===== LEGEND ===== */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "50px",
+          right: "20px",
+          background: "white",
+          padding: "10px 14px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+          zIndex: 1000,
+          color: "black",
+          fontSize: "14px",
+          lineHeight: "24px",
+        }}
+      >
+        <span><b>Accident zone areas</b></span>
 
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <span style={{ width: 10, height: 10, borderRadius: "50%", background: "blue", display: "inline-block" }} />
-    Light
-  </div>
-</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "red" }} />
+          Severe
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "yellow", border: "1px solid #999" }} />
+          Moderate
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "blue" }} />
+          Light
+        </div>
+      </div>
+
     </div>
   );
 }
