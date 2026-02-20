@@ -1,38 +1,57 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List
+from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
 
-from preprocessing import load_data
-from route_risk import calculate_route_risk, risk_to_color
+# ⭐ ML imports
+from ml_preprocesing import load_ml_data
+from ml_hotspots import detect_hotspots
 
 app = FastAPI()
 
-# Load dataset once when server starts
-df = load_data()
+# ---------------- CORS ----------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ---------------- LOAD DATA (FOR MAP SPOTS) ----------------
+df = pd.read_csv(
+    "dataset/accidents.csv",
+    encoding="latin1",
+    low_memory=False
+)
+
+df = df[
+    ["latitude", "longitude", "accident_severity"]
+]
+
+df = df.dropna()
+
+# ---------------- LOAD DATA (FOR AI MODEL) ----------------
+ml_df = load_ml_data()
 
 
-# ---------- DATA MODEL (IMPORTANT) ----------
-class RouteRequest(BaseModel):
-    route: List[List[float]]   # [[lat, lon], [lat, lon]]
+# ============================================================
+# BASIC ACCIDENT SPOTS (YOUR EXISTING FEATURE)
+# ============================================================
+@app.get("/accident-spots")
+def accident_spots():
+
+    # limit markers for performance
+    sample = df.sample(2000)
+
+    return sample.to_dict(orient="records")
 
 
-# ---------- HOME ROUTE ----------
-@app.get("/")
-def home():
-    return {"message": "Backend running successfully"}
+# ============================================================
+# AI FUTURE HOTSPOT PREDICTION
+# ============================================================
+@app.get("/future-hotspots")
+def future_hotspots():
 
+    hotspots = detect_hotspots(ml_df)
 
-# ---------- ROUTE RISK API ----------
-@app.post("/route-risk")
-def route_risk(request: RouteRequest):
-
-    route_points = request.route
-
-    score = calculate_route_risk(route_points, df)
-    color = risk_to_color(score)
-
-    return {
-        "risk_score": score,
-        "color": color,
-        "polyline": route_points
-    }
+    return hotspots
