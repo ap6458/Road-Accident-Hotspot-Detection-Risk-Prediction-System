@@ -60,10 +60,10 @@ export default function MapView({
       <div
         style={{
           position: "absolute",
-          color : "white",
+          color : "black",
           top: "20px",
           right: "20px",
-          background: "black",
+          background: "white",
           padding: "12px",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
@@ -127,7 +127,8 @@ export default function MapView({
     fontSize: "14px",
     lineHeight: "24px",
   }}
->
+> 
+  <span>Accident zone areas</span>
   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
     <span style={{ width: 10, height: 10, borderRadius: "50%", background: "red", display: "inline-block" }} />
     Severe
