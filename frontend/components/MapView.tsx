@@ -50,7 +50,7 @@ export default function MapView({
 
   const getHotspotColor = (risk: string) => {
     if (risk === "high") return "red";
-    if (risk === "medium") return "yellow";
+    if (risk === "moderate") return "yellow";
     return "blue";
   };
 
@@ -60,10 +60,10 @@ export default function MapView({
       <div
         style={{
           position: "absolute",
-          color : "black",
+          color : "white",
           top: "20px",
           right: "20px",
-          background: "white",
+          background: "black",
           padding: "12px",
           borderRadius: "10px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
@@ -116,7 +116,7 @@ export default function MapView({
 <div
   style={{
     position: "absolute",
-    bottom: "20px",
+    bottom: "50px",
     right: "20px",
     background: "white",
     padding: "10px 14px",

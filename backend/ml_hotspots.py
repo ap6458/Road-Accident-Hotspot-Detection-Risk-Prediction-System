@@ -27,9 +27,9 @@ def detect_hotspots(df):
 
         avg_risk = cluster["risk_score"].mean()
 
-        if avg_risk > 7:
+        if avg_risk > 8:
             risk = "high"
-        elif avg_risk > 4:
+        elif avg_risk > 6:
             risk = "moderate"
         else:
             risk = "low"

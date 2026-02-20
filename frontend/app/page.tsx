@@ -32,8 +32,8 @@ export default function Home() {
       <div
         style={{
           padding: "10px",
-          color : "black",
-          background: "#f5f5f5",
+          color : "white",
+          background: "black",
           display: "flex",
           gap: "20px",
         }}
