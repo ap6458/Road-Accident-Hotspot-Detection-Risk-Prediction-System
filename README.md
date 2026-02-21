@@ -91,3 +91,32 @@ This allows identification of potential future accident-prone zones.
 ---
 
 # 📂 Project Structure
+nhai-hotspot/
+│
+├── frontend/
+│ ├── app/
+│ │ └── page.tsx
+│ ├── components/
+│ │ ├── MapView.tsx
+│ │ └── Navbar.tsx
+│ └── package.json
+│
+├── backend/
+│ ├── main.py
+│ ├── ml_hotspots.py
+│ └── dataset/
+│ └── accidents.csv
+│
+└── README.md
+
+---
+
+# ⚙️ Installation & Setup
+
+## 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/ap6458/Road-Accident-Hotspot-Detection-Risk-Prediction-System.git
+cd nhai-hotspot
+pip install fastapi uvicorn pandas scikit-learn python-multipart
+```
