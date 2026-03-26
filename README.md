@@ -10,16 +10,17 @@ This project was developed as a hackathon solution for proactive road safety mon
 
 # 📌 Project Overview
 
-Road accidents are a major challenge for traffic authorities.  
-This dashboard provides:
+Road accidents are a major challenge for traffic authorities across India. Traditional approaches react to accidents after they occur — this dashboard takes a predictive approach.
+The system:
 
-- Interactive accident visualization on map
-- Severity-based accident highlighting
-- AI-predicted future hotspots
-- Live dashboard statistics
-- Accident reporting interface
+Visualizes historical accident data on an interactive map
+Color-codes accidents by severity for instant pattern recognition
+Uses DBSCAN clustering to identify dense accident zones
+Predicts future high-risk areas so authorities can act before accidents happen
+Provides a clean reporting interface for new incident logging
 
-The goal is to assist authorities in identifying dangerous zones before accidents occur.
+
+Originally prototyped in 12 hours at a hackathon; subsequently extended with improved ML pipeline, responsive UI, and a structured REST API.ts occur.
 
 ---
 
@@ -118,5 +119,10 @@ nhai-hotspot/
 ```bash
 git clone https://github.com/ap6458/Road-Accident-Hotspot-Detection-Risk-Prediction-System.git
 cd nhai-hotspot
+cd backend
 pip install fastapi uvicorn pandas scikit-learn python-multipart
+uvicorn main:app --reload
+cd frontend
+npm install
+npm run dev
 ```
