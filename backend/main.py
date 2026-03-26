@@ -1,57 +1,40 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import pandas as pd
+from ml_hotspots import get_accidents, get_hotspots
 
-# ⭐ ML imports
-from ml_preprocesing import load_ml_data
-from ml_hotspots import detect_hotspots
+app = FastAPI(title="NHAI Road Accident API", version="1.0.0")
 
-app = FastAPI()
-
-# ---------------- CORS ----------------
+# ── CORS ──────────────────────────────────────────────────────────────────────
+# This allows the Next.js frontend (port 3000) to call this API.
+# Without this, the browser will block every request with a CORS error.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---------------- LOAD DATA (FOR MAP SPOTS) ----------------
-df = pd.read_csv(
-    "dataset/accidents.csv",
-    encoding="latin1",
-    low_memory=False
-)
+# ── Routes ────────────────────────────────────────────────────────────────────
 
-df = df[
-    ["latitude", "longitude", "accident_severity"]
-]
-
-df = df.dropna()
-
-# ---------------- LOAD DATA (FOR AI MODEL) ----------------
-ml_df = load_ml_data()
+@app.get("/")
+def root():
+    return {"status": "NHAI Road Intelligence API is running ✅"}
 
 
-# ============================================================
-# BASIC ACCIDENT SPOTS (YOUR EXISTING FEATURE)
-# ============================================================
-@app.get("/accident-spots")
-def accident_spots():
-
-    # limit markers for performance
-    sample = df.sample(2000)
-
-    return sample.to_dict(orient="records")
+@app.get("/accidents")
+def accidents():
+    """
+    Returns all accident records as a list of objects:
+    [{ "latitude": float, "longitude": float, "severity": "severe"|"moderate"|"light" }, ...]
+    """
+    return get_accidents()
 
 
-# ============================================================
-# AI FUTURE HOTSPOT PREDICTION
-# ============================================================
-@app.get("/future-hotspots")
-def future_hotspots():
-
-    hotspots = detect_hotspots(ml_df)
-
-    return hotspots
+@app.get("/hotspots")
+def hotspots():
+    """
+    Returns AI-predicted hotspot cluster centres:
+    [{ "latitude": float, "longitude": float, "count": int }, ...]
+    """
+    return get_hotspots()
